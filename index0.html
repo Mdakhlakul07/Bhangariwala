@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vangariwala - Waste Management System</title>
+    <link rel="stylesheet" href="style-1.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-container"></div>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="logo-container">
+                <img id="splash-logo" src="logo.png" alt="Vangariwala Logo" class="splash-logo hidden">
+                <div id="fallback-logo" class="fallback-logo">
+                    <div class="animated-logo">🗂️</div>
+                    <div class="logo-text">Vangariwala</div>
+                </div>
+            </div>
+            <div class="loading-animation">
+                <div class="loading-bar"></div>
+            </div>
+            <p class="splash-tagline" data-en="Connecting Communities through Waste Management" data-bn="বর্জ্য ব্যবস্থাপনার মাধ্যমে সম্প্রদায়কে সংযুক্ত করা">Connecting Communities through Waste Management</p>
+        </div>
+    </div>
+
+    <!-- Language Toggle -->
+    <div id="language-toggle" class="language-toggle hidden">
+        <button id="lang-btn" class="lang-btn" data-lang="en">
+            <span class="lang-text">বাং</span>
+        </button>
+    </div>
+
+    <!-- Authentication Container -->
+    <div id="auth-container" class="auth-container hidden">
+        <!-- Login Page -->
+        <div id="login-page" class="auth-page">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1 data-en="Welcome Back" data-bn="স্বাগতম">Welcome Back</h1>
+                    <p data-en="Sign in to your account" data-bn="আপনার অ্যাকাউন্টে সাইন ইন করুন">Sign in to your account</p>
+                </div>
+                
+                <div class="demo-info">
+                    <h4 data-en="Demo Credentials" data-bn="ডেমো তথ্য">Demo Credentials</h4>
+                    <p data-en="Household: user@demo.com / demo123" data-bn="পারিবারিক: user@demo.com / demo123">Household: user@demo.com / demo123</p>
+                    <p data-en="Collector: collector@demo.com / demo123" data-bn="সংগ্রাহক: collector@demo.com / demo123">Collector: collector@demo.com / demo123</p>
+                </div>
+                
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label" data-en="Email Address" data-bn="ইমেইল ঠিকানা">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required data-en="Enter your email" data-bn="আপনার ইমেইল দিন" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label" data-en="Password" data-bn="পাসওয়ার্ড">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" required data-en="Enter your password" data-bn="আপনার পাসওয়ার্ড দিন" placeholder="Enter your password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn--primary btn--full-width">
+                        <span data-en="Sign In" data-bn="সাইন ইন">Sign In</span>
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <p data-en="Don't have an account?" data-bn="অ্যাকাউন্ট নেই?">Don't have an account? 
+                        <a href="#" id="show-signup" data-en="Sign up" data-bn="সাইন আপ">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Page -->
+        <div id="signup-page" class="auth-page hidden">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1 data-en="Create Account" data-bn="অ্যাকাউন্ট তৈরি করুন">Create Account</h1>
+                    <p data-en="Join our waste management community" data-bn="আমাদের বর্জ্য ব্যবস্থাপনা সম্প্রদায়ে যোগ দিন">Join our waste management community</p>
+                </div>
+                
+                <form id="signup-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="name" class="form-label" data-en="Full Name" data-bn="পূর্ণ নাম">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required data-en="Enter your full name" data-bn="আপনার পূর্ণ নাম দিন" placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-email" class="form-label" data-en="Email Address" data-bn="ইমেইল ঠিকানা">Email Address</label>
+                        <input type="email" id="signup-email" name="email" class="form-control" required data-en="Enter your email" data-bn="আপনার ইমেইল দিন" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label" data-en="Phone Number" data-bn="ফোন নম্বর">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required data-en="Enter your phone number" data-bn="আপনার ফোন নম্বর দিন" placeholder="Enter your phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address" class="form-label" data-en="Address" data-bn="ঠিকানা">Address</label>
+                        <textarea id="address" name="address" class="form-control" required data-en="Enter your address" data-bn="আপনার ঠিকানা দিন" placeholder="Enter your address"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-type" class="form-label" data-en="User Type" data-bn="ব্যবহারকারীর ধরন">User Type</label>
+                        <select id="user-type" name="user_type" class="form-control" required>
+                            <option value="" data-en="Select user type" data-bn="ব্যবহারকারীর ধরন নির্বাচন করুন">Select user type</option>
+                            <option value="household" data-en="Household Owner" data-bn="পারিবারিক মালিক">Household Owner</option>
+                            <option value="collector" data-en="Waste Collector" data-bn="বর্জ্য সংগ্রাহক">Waste Collector</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-password" class="form-label" data-en="Password" data-bn="পাসওয়ার্ড">Password</label>
+                        <input type="password" id="signup-password" name="password" class="form-control" required data-en="Create a password" data-bn="একটি পাসওয়ার্ড তৈরি করুন" placeholder="Create a password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn--primary btn--full-width">
+                        <span data-en="Create Account" data-bn="অ্যাকাউন্ট তৈরি করুন">Create Account</span>
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <p data-en="Already have an account?" data-bn="ইতিমধ্যে অ্যাকাউন্ট আছে?">Already have an account? 
+                        <a href="#" id="show-login" data-en="Sign in" data-bn="সাইন ইন">Sign in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <img id="header-logo" src="logo.png" alt="Vangariwala" class="logo-small">
+                <div id="header-fallback-logo" class="header-fallback-logo hidden">
+                    <div class="logo-svg">🗂️</div>
+                    <span>Vangariwala</span>
+                </div>
+            </div>
+            <div class="header-user">
+                <span id="user-greeting" class="user-greeting"></span>
+                
+                <!-- Live Counters -->
+                <div class="live-stats">
+                    <span id="live-co2-counter" class="live-counter"></span>
+                    <span id="live-scrap-today" class="live-counter"></span>
+                </div>
+                
+                <button id="header-profile-btn" class="profile-btn-header">
+                    <img src="https://via.placeholder.com/40" alt="Profile" id="header-profile-img">
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section id="dashboard-tab" class="tab-content active">
+                <!-- Household Dashboard -->
+                <div id="household-dashboard" class="dashboard-view">
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-submissions">7</div>
+                                <div class="stat-label" data-en="Total Submissions" data-bn="মোট জমা">Total Submissions</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-points">75</div>
+                                <div class="stat-label" data-en="Points Earned" data-bn="অর্জিত পয়েন্ট">Points Earned</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🌱</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="co2-saved">5.64</div>
+                                <div class="stat-label" data-en="CO2 Saved (kg)" data-bn="CO2 সংরক্ষণ (কেজি)">CO2 Saved (kg)</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="earnings">৳${Math.floor(Math.random() * 500) + 100}</div>
+                                <div class="stat-label" data-en="Earnings" data-bn="আয়">Earnings</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button id="call-vangariwala" class="action-btn">
+                            <div class="action-icon">📞</div>
+                            <span data-en="Call Vangariwala" data-bn="ভাঙ্গারিওয়ালা কল করুন">Call Vangariwala</span>
+                        </button>
+                        <button id="schedule-pickup" class="action-btn">
+                            <div class="action-icon">📅</div>
+                            <span data-en="Schedule Pickup" data-bn="পিকআপ শিডিউল">Schedule Pickup</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Nearby Collectors Map -->
+                    <div class="map-container">
+                        <h3 data-en="Nearby Collectors" data-bn="নিকটবর্তী সংগ্রাহক">Nearby Collectors</h3>
+                        <div id="leaflet-map" class="leaflet-map"></div>
+                    </div>
+                </div>
+
+                <!-- Collector Dashboard -->
+                <div id="collector-dashboard" class="dashboard-view hidden">
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <div class="stat-value">${Math.floor(Math.random() * 20) + 5}</div>
+                                <div class="stat-label" data-en="Collections Today" data-bn="আজকের সংগ্রহ">Collections Today</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-value">৳${Math.floor(Math.random() * 1000) + 500}</div>
+                                <div class="stat-label" data-en="Today's Earnings" data-bn="আজকের আয়">Today's Earnings</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏠</div>
+                            <div class="stat-info">
+                                <div class="stat-value">${Math.floor(Math.random() * 5) + 1}</div>
+                                <div class="stat-label" data-en="Pending Requests" data-bn="অপেক্ষমান অনুরোধ">Pending Requests</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-info">
+                                <div class="stat-value">4.8</div>
+                                <div class="stat-label" data-en="Rating" data-bn="রেটিং">Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="requests-section">
+                        <h2 data-en="Available Requests" data-bn="উপলব্ধ অনুরোধ">Available Requests</h2>
+                        <div id="collector-requests" class="requests-container">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Tab -->
+            <section id="submit-tab" class="tab-content">
+                <!-- Household Submit -->
+                <div id="submit-waste" class="submit-section">
+                    <h2 data-en="Submit Waste" data-bn="বর্জ্য জমা দিন">Submit Waste</h2>
+                    
+                    <form id="waste-submission-form">
+                        <div class="waste-types-grid">
+                            <div class="waste-type-card">
+                                <div class="waste-icon">🛍️</div>
+                                <h3 data-en="Plastic" data-bn="প্লাস্টিক বর্জ্য">Plastic</h3>
+                                <div class="co2-info">CO₂/kg: <span>1.2</span></div>
+                                <div class="bdt-info">25 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="plastic" data-waste="plastic">
+                            </div>
+                            
+                            <div class="waste-type-card">
+                                <div class="waste-icon">🗞️</div>
+                                <h3 data-en="Paper" data-bn="কাগজ বর্জ্য">Paper</h3>
+                                <div class="co2-info">CO₂/kg: <span>0.4</span></div>
+                                <div class="bdt-info">18 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="paper" data-waste="paper">
+                            </div>
+                            
+                            <div class="waste-type-card">
+                                <div class="waste-icon">🥫</div>
+                                <h3 data-en="Metal" data-bn="ধাতব বর্জ্য">Metal</h3>
+                                <div class="co2-info">CO₂/kg: <span>0.1</span></div>
+                                <div class="bdt-info">45 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="metal" data-waste="metal">
+                            </div>
+                            
+                            <div class="waste-type-card">
+                                <div class="waste-icon">🍎</div>
+                                <h3 data-en="Organic" data-bn="জৈব বর্জ্য">Organic</h3>
+                                <div class="co2-info">CO₂/kg: <span>0.6</span></div>
+                                <div class="bdt-info">8 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="organic" data-waste="organic">
+                            </div>
+                            
+                            <div class="waste-type-card">
+                                <div class="waste-icon">🍶</div>
+                                <h3 data-en="Glass" data-bn="কাঁচ বর্জ্য">Glass</h3>
+                                <div class="co2-info">CO₂/kg: <span>0.1</span></div>
+                                <div class="bdt-info">12 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="glass" data-waste="glass">
+                            </div>
+                            
+                            <div class="waste-type-card">
+                                <div class="waste-icon">💻</div>
+                                <h3 data-en="Electronic" data-bn="ইলেকট্রনিক বর্জ্য">Electronic</h3>
+                                <div class="co2-info">CO₂/kg: <span>0.8</span></div>
+                                <div class="bdt-info">120 BDT/kg</div>
+                                <input type="number" min="0" step="0.1" placeholder="kg" name="electronic" data-waste="electronic">
+                            </div>
+                        </div>
+                        
+                        <div class="waste-summary">
+                            <div class="summary-item">
+                                <span data-en="Total Weight (kg)" data-bn="মোট ওজন (কেজি)">Total Weight (kg)</span>
+                                <span id="summary-weight">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-en="Points" data-bn="পয়েন্ট">Points</span>
+                                <span id="summary-points">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-en="CO₂ Saved (kg)" data-bn="CO₂ সংরক্ষণ (কেজি)">CO₂ Saved (kg)</span>
+                                <span id="summary-co2">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-en="Estimated Earnings (BDT)" data-bn="আনুমানিক আয় (টাকা)">Estimated Earnings (BDT)</span>
+                                <span id="summary-bdt">0</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn--primary btn--full-width">
+                            <span data-en="Submit Waste" data-bn="বর্জ্য জমা দিন">Submit Waste</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Collector Requests -->
+                <div id="requests-list" class="requests-section hidden">
+                    <!-- Dynamically populated -->
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history-tab" class="tab-content">
+                <div class="history-content">
+                    <h2 data-en="History" data-bn="ইতিহাস">History</h2>
+                    <div id="history-content">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications Tab -->
+            <section id="notifications-tab" class="tab-content">
+                <div class="notifications-content">
+                    <h2 data-en="Notifications" data-bn="বিজ্ঞপ্তি">Notifications</h2>
+                    <div id="notifications-content">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Tab -->
+            <section id="profile-tab" class="tab-content">
+                <div class="profile-content">
+                    <div class="profile-avatar-section">
+                        <img id="profile-avatar" src="https://via.placeholder.com/80" alt="Profile Avatar" class="profile-avatar">
+                        <button id="change-avatar-btn" class="btn btn--secondary btn--sm">
+                            <span data-en="Change Avatar" data-bn="অবতার পরিবর্তন">Change Avatar</span>
+                        </button>
+                        <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div id="profile-view" class="profile-details">
+                        <div class="profile-field">
+                            <label data-en="Name" data-bn="নাম">Name</label>
+                            <span id="profile-name">Demo User</span>
+                        </div>
+                        <div class="profile-field">
+                            <label data-en="Email" data-bn="ইমেইল">Email</label>
+                            <span id="profile-email">user@demo.com</span>
+                        </div>
+                        <div class="profile-field">
+                            <label data-en="Phone" data-bn="ফোন">Phone</label>
+                            <span id="profile-phone">+880123456789</span>
+                        </div>
+                        <div class="profile-field">
+                            <label data-en="Address" data-bn="ঠিকানা">Address</label>
+                            <span id="profile-address">Dhaka, Bangladesh</span>
+                        </div>
+                        <div class="profile-field">
+                            <label data-en="User Type" data-bn="ব্যবহারকারীর ধরন">User Type</label>
+                            <span id="profile-user-type">Household Owner</span>
+                        </div>
+                    </div>
+                    
+                    <div id="profile-edit" class="profile-edit hidden">
+                        <div class="form-group">
+                            <label for="edit-name" class="form-label" data-en="Name" data-bn="নাম">Name</label>
+                            <input type="text" id="edit-name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone" class="form-label" data-en="Phone" data-bn="ফোন">Phone</label>
+                            <input type="tel" id="edit-phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-address" class="form-label" data-en="Address" data-bn="ঠিকানা">Address</label>
+                            <textarea id="edit-address" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button id="save-profile-btn" class="btn btn--primary">
+                                <span data-en="Save Changes" data-bn="পরিবর্তন সংরক্ষণ">Save Changes</span>
+                            </button>
+                            <button id="cancel-edit-btn" class="btn btn--secondary">
+                                <span data-en="Cancel" data-bn="বাতিল">Cancel</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button id="edit-profile-btn" class="btn btn--secondary btn--full-width">
+                            <span data-en="Edit Profile" data-bn="প্রোফাইল সম্পাদনা">Edit Profile</span>
+                        </button>
+                        <button id="logout-btn" class="btn btn--outline btn--full-width">
+                            <span data-en="Logout" data-bn="লগআউট">Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="dashboard">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label" data-en="Dashboard" data-bn="ড্যাশবোর্ড">Dashboard</div>
+            </button>
+            <button class="nav-item" data-tab="submit">
+                <div class="nav-icon">📦</div>
+                <div class="nav-label" data-en="Submit" data-bn="জমা দিন">Submit</div>
+            </button>
+            <button class="nav-item" data-tab="history">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label" data-en="History" data-bn="ইতিহাস">History</div>
+            </button>
+            <button class="nav-item" data-tab="notifications">
+                <div class="nav-icon">🔔</div>
+                <div class="nav-label" data-en="Notifications" data-bn="বিজ্ঞপ্তি">Notifications</div>
+                <div class="notification-badge">3</div>
+            </button>
+            <button class="nav-item" data-tab="profile">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label" data-en="Profile" data-bn="প্রোফাইল">Profile</div>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <!-- Call Modal -->
+    <div id="call-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-en="Call Vangariwala" data-bn="ভাঙ্গারিওয়ালা কল করুন">Call Vangariwala</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="call-info">
+                    <div class="call-animation">
+                        <div class="call-ring"></div>
+                        <div class="call-ring"></div>
+                        <div class="call-ring"></div>
+                    </div>
+                    <div class="call-icon">📞</div>
+                    <p data-en="Connecting you with the nearest Vangariwala..." data-bn="নিকটতম ভাঙ্গারিওয়ালার সাথে সংযোগ করা হচ্ছে...">Connecting you with the nearest Vangariwala...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div id="schedule-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-en="Schedule Pickup" data-bn="পিকআপ শিডিউল">Schedule Pickup</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="schedule-form">
+                    <div class="form-group">
+                        <label for="pickup-date" class="form-label" data-en="Pickup Date" data-bn="পিকআপ তারিখ">Pickup Date</label>
+                        <input type="date" id="pickup-date" name="pickup_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup-time" class="form-label" data-en="Pickup Time" data-bn="পিকআপ সময়">Pickup Time</label>
+                        <input type="time" id="pickup-time" name="pickup_time" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="waste-type" class="form-label" data-en="Waste Type" data-bn="বর্জ্যের ধরন">Waste Type</label>
+                        <select id="waste-type" name="waste_type" class="form-control" required>
+                            <option value="" data-en="Select waste type" data-bn="বর্জ্যের ধরন নির্বাচন করুন">Select waste type</option>
+                            <option value="plastic" data-en="Plastic" data-bn="প্লাস্টিক">Plastic</option>
+                            <option value="paper" data-en="Paper" data-bn="কাগজ">Paper</option>
+                            <option value="metal" data-en="Metal" data-bn="ধাতু">Metal</option>
+                            <option value="organic" data-en="Organic" data-bn="জৈব">Organic</option>
+                            <option value="glass" data-en="Glass" data-bn="কাঁচ">Glass</option>
+                            <option value="electronic" data-en="Electronic" data-bn="ইলেকট্রনিক">Electronic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes" class="form-label" data-en="Additional Notes" data-bn="অতিরিক্ত নোট">Additional Notes</label>
+                        <textarea id="notes" name="notes" class="form-control" data-en="Any special instructions..." data-bn="কোনো বিশেষ নির্দেশনা..." placeholder="Any special instructions..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary modal-close" data-en="Cancel" data-bn="বাতিল">Cancel</button>
+                <button type="submit" form="schedule-form" class="btn btn--primary" data-en="Schedule Pickup" data-bn="পিকআপ শিডিউল">Schedule Pickup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app-1.js"></script>
+</body>
+</html>
